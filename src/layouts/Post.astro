@@ -1,0 +1,213 @@
+---
+import Base from './Base.astro'
+import Breadcrumb from '../components/Breadcrumb.astro'
+import TagPill from '../components/TagPill.astro'
+import { formatDate } from '../lib/utils'
+
+interface BreadcrumbSegment {
+  label: string
+  href?: string
+  icon: 'home' | 'book-open' | 'folder-open' | 'map' | 'file-text' | 'tag'
+}
+
+interface Props {
+  title: string
+  date?: Date
+  tags?: string[]
+  ctf?: string
+  summary?: string
+  readingTime?: string
+  collection: 'blog' | 'writeups' | 'playbook'
+  slug: string
+  prevPost?: { title: string; slug: string }
+  nextPost?: { title: string; slug: string }
+}
+
+const {
+  title,
+  date,
+  tags = [],
+  ctf,
+  summary,
+  readingTime,
+  collection,
+  slug,
+  prevPost,
+  nextPost,
+} = Astro.props
+
+const collectionLabels = {
+  blog: 'Blog',
+  writeups: 'Writeups',
+  playbook: 'Playbook',
+}
+const collectionIcons: Record<string, 'book-open' | 'folder-open' | 'map'> = {
+  blog: 'book-open',
+  writeups: 'folder-open',
+  playbook: 'map',
+}
+
+const breadcrumbs: BreadcrumbSegment[] = [
+  { label: 'Home', href: '/', icon: 'home' },
+  { label: collectionLabels[collection], href: `/${collection}`, icon: collectionIcons[collection] },
+  { label: title, icon: 'file-text' },
+]
+---
+
+<Base title={title} description={summary} canonicalUrl={`https://muteki.sh/${collection}/${slug}`}>
+  <div class="page-container">
+    <article>
+      <!-- Breadcrumb -->
+      <Breadcrumb segments={breadcrumbs} />
+
+      <!-- Title block -->
+      <header class="post-header">
+        <h1 class="post-title">{title}</h1>
+
+        <!-- Metadata row -->
+        <div class="post-meta">
+          {date && (
+            <time datetime={date.toISOString()} class="meta-item">
+              {formatDate(date)}
+            </time>
+          )}
+          {ctf && (
+            <span class="meta-item meta-ctf">{ctf}</span>
+          )}
+          {readingTime && (
+            <span class="meta-item">{readingTime}</span>
+          )}
+        </div>
+
+        <!-- Tags -->
+        {tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((tag) => <TagPill tag={tag} />)}
+          </div>
+        )}
+      </header>
+
+      <!-- Content -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- Post nav -->
+      <nav class="post-nav">
+        {prevPost ? (
+          <a href={`/${collection}/${prevPost.slug}`} class="post-nav-link post-nav-prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            <span>{prevPost.title}</span>
+          </a>
+        ) : <div />}
+        <a href={`/${collection}`} class="post-nav-back">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8L2 12l4 4"/><path d="M2 12h20"/></svg>
+          All {collectionLabels[collection]}
+        </a>
+        {nextPost ? (
+          <a href={`/${collection}/${nextPost.slug}`} class="post-nav-link post-nav-next">
+            <span>{nextPost.title}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        ) : <div />}
+      </nav>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .page-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .post-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    margin-top: 1.25rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.875rem;
+  }
+
+  .meta-ctf {
+    color: var(--accent);
+    background: var(--accent-muted);
+    padding: 0.1em 0.5em;
+    border-radius: 4px;
+    border: 1px solid color-mix(in oklch, var(--accent), transparent 60%);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    transition: color 0.15s;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .post-nav-link:hover { color: var(--text); }
+  .post-nav-next { justify-content: flex-end; text-align: right; }
+  .post-nav-link span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .post-nav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.15s;
+    justify-content: center;
+  }
+  .post-nav-back:hover { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .post-nav {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      text-align: center;
+    }
+    .post-nav-next { justify-content: flex-start; text-align: left; }
+    .post-nav-back { justify-content: flex-start; }
+  }
+</style>

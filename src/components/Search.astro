@@ -1,0 +1,86 @@
+---
+// We don't have a full search implementation yet, but this could be a placeholder or simple client-side search component.
+// For now, it will be a simple search bar that filters the current page.
+---
+
+<div class="search-container">
+  <div class="search-input-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="search-icon">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.3-4.3"/>
+    </svg>
+    <input type="text" id="site-search" placeholder="Search entries (Ctrl+K)..." aria-label="Search" autocomplete="off" />
+    <kbd class="search-kbd">⌘K</kbd>
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('site-search') as HTMLInputElement;
+  
+  if (searchInput) {
+    // Basic filtering for the current page (cards)
+    searchInput.addEventListener('input', (e) => {
+      const term = (e.target as HTMLInputElement).value.toLowerCase();
+      const cards = document.querySelectorAll('.card-wrapper, .home-section .card');
+      
+      cards.forEach(card => {
+        const text = (card.textContent || '').toLowerCase();
+        if (text.includes(term)) {
+          (card as HTMLElement).style.display = '';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+
+    // Keyboard shortcut
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .search-container {
+    margin-bottom: 1.5rem;
+    max-width: 400px;
+  }
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--text-faint);
+  }
+  #site-search {
+    width: 100%;
+    padding: 0.5rem 2.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #site-search:focus {
+    border-color: var(--accent);
+  }
+  .search-kbd {
+    position: absolute;
+    right: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    background: var(--bg-subtle);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+</style>

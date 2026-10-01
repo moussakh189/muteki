@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content'
+import Post from '../../layouts/Post.astro'
+import { getReadingTime } from '../../lib/utils'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('writeups', ({ data }) => !data.draft)
+  const sorted = entries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+
+  return sorted.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prevPost: sorted[index + 1]
+        ? { title: sorted[index + 1].data.title, slug: sorted[index + 1].slug }
+        : undefined,
+      nextPost: sorted[index - 1]
+        ? { title: sorted[index - 1].data.title, slug: sorted[index - 1].slug }
+        : undefined,
+    },
+  }))
+}
+
+const { entry, prevPost, nextPost } = Astro.props
+const { Content } = await render(entry)
+const readingTime = getReadingTime(entry.body)
+---
+
+<Post
+  title={entry.data.title}
+  date={entry.data.date}
+  tags={entry.data.tags}
+  ctf={entry.data.ctf}
+  summary={entry.data.summary}
+  readingTime={readingTime}
+  collection="writeups"
+  slug={entry.id}
+  prevPost={prevPost}
+  nextPost={nextPost}
+>
+  <Content />
+</Post>

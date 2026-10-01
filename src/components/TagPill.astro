@@ -1,0 +1,50 @@
+---
+interface Props {
+  tag: string
+  href?: boolean  // if true, wraps in an anchor to /tags/[tag]
+}
+
+const { tag, href = true } = Astro.props
+const slug = tag.toLowerCase().replace(/\s+/g, '-')
+---
+
+{href ? (
+  <a href={`/tags/${slug}`} class="tag-pill">
+    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+      <circle cx="7.5" cy="7.5" r="1.5"/>
+    </svg>
+    {tag}
+  </a>
+) : (
+  <span class="tag-pill">
+    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+      <circle cx="7.5" cy="7.5" r="1.5"/>
+    </svg>
+    {tag}
+  </span>
+)}
+
+<style>
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.15em 0.55em;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  a.tag-pill:hover {
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent), transparent 50%);
+    background: var(--accent-muted);
+  }
+</style>

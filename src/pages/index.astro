@@ -1,0 +1,297 @@
+---
+import Base from '../layouts/Base.astro'
+import Card from '../components/Card.astro'
+import { getCollection } from 'astro:content'
+import { getReadingTime } from '../lib/utils'
+
+const writeups = (await getCollection('writeups', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3)
+
+const blog = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3)
+
+const playbook = (await getCollection('playbook', ({ data }) => !data.draft))
+  .slice(0, 2)
+---
+
+<Base title="Home">
+  <div class="home-container">
+
+    <!-- ── Hero ── -->
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="4 17 10 11 4 5"/>
+          <line x1="12" x2="20" y1="19" y2="19"/>
+        </svg>
+        web security / ctf
+      </div>
+      <h1 class="hero-name">Khenfri Moussa</h1>
+      <p class="hero-handle">Muteki in CTFs &mdash; <span class="hero-team">1nn0$leuths</span></p>
+      <p class="hero-bio">
+        Cybersecurity student making baby steps into web security and vulnerability research.
+        This is where I think out loud &mdash; writeups, methodology, and research notes.
+        Take whatever is useful. Legal work only.
+      </p>
+      <div class="hero-links">
+        <a href="/writeups" class="hero-cta hero-cta--primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Writeups
+        </a>
+        <a href="/blog" class="hero-cta">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          Blog
+        </a>
+        <a href="/playbook" class="hero-cta">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+            <line x1="9" x2="9" y1="3" y2="18"/>
+            <line x1="15" x2="15" y1="6" y2="21"/>
+          </svg>
+          Playbook
+        </a>
+        <a href="/about" class="hero-cta">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="5"/>
+            <path d="M20 21a8 8 0 0 0-16 0"/>
+          </svg>
+          About
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Latest Writeups ── -->
+    {writeups.length > 0 && (
+      <section class="home-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Latest Writeups
+          </h2>
+          <a href="/writeups" class="section-all">All writeups &rarr;</a>
+        </div>
+        <div class="card-grid">
+          {writeups.map((entry) => (
+            <Card
+              title={entry.data.title}
+              summary={entry.data.summary}
+              href={`/writeups/${entry.id}`}
+              date={entry.data.date}
+              tags={entry.data.tags}
+              collection="writeups"
+              ctf={entry.data.ctf}
+              readingTime={getReadingTime(entry.body)}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ── Latest Blog ── -->
+    {blog.length > 0 && (
+      <section class="home-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            Blog
+          </h2>
+          <a href="/blog" class="section-all">All posts &rarr;</a>
+        </div>
+        <div class="card-grid">
+          {blog.map((entry) => (
+            <Card
+              title={entry.data.title}
+              summary={entry.data.summary}
+              href={`/blog/${entry.id}`}
+              date={entry.data.date}
+              tags={entry.data.tags}
+              collection="blog"
+              readingTime={getReadingTime(entry.body)}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ── Playbook ── -->
+    {playbook.length > 0 && (
+      <section class="home-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+              <line x1="9" x2="9" y1="3" y2="18"/>
+              <line x1="15" x2="15" y1="6" y2="21"/>
+            </svg>
+            Playbook
+          </h2>
+          <a href="/playbook" class="section-all">Full playbook &rarr;</a>
+        </div>
+        <div class="card-grid card-grid--two">
+          {playbook.map((entry) => (
+            <Card
+              title={entry.data.title}
+              summary={entry.data.summary}
+              href={`/playbook/${entry.id}`}
+              tags={entry.data.tags}
+              collection="playbook"
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+  </div>
+</Base>
+
+<style>
+  .home-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .hero-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hero-name {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-top: 0.25rem;
+  }
+
+  .hero-handle {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .hero-team {
+    color: var(--accent);
+  }
+
+  .hero-bio {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    max-width: 560px;
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--bg-card);
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .hero-cta:hover {
+    color: var(--text);
+    border-color: color-mix(in oklch, var(--accent), transparent 50%);
+    background: var(--bg-subtle);
+  }
+  .hero-cta--primary {
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent), transparent 50%);
+    background: var(--accent-muted);
+  }
+  .hero-cta--primary:hover {
+    background: color-mix(in oklch, var(--accent), transparent 80%);
+  }
+
+  /* ── Sections ── */
+  .home-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .section-all {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: color 0.15s;
+    white-space: nowrap;
+  }
+  .section-all:hover { color: var(--accent); }
+
+  /* ── Card grids ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .card-grid--two {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    .card-grid,
+    .card-grid--two {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

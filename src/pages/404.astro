@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro'
+---
+
+<Base title="404 — Not Found">
+  <div class="not-found">
+    <p class="not-found-code">404</p>
+    <h1 class="not-found-title">Page not found</h1>
+    <p class="not-found-desc">This URL doesn't map to anything here. Maybe the post was moved or never existed.</p>
+    <a href="/" class="not-found-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 8L2 12l4 4"/>
+        <path d="M2 12h20"/>
+      </svg>
+      Back to home
+    </a>
+  </div>
+</Base>
+
+<style>
+  .not-found {
+    max-width: 480px;
+    margin: 6rem auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .not-found-code {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+  .not-found-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .not-found-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .not-found-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    transition: color 0.15s;
+  }
+  .not-found-link:hover { color: var(--accent); }
+</style>

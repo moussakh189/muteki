@@ -1,0 +1,67 @@
+---
+import '../styles/global.css'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+import Interactions from '../components/Interactions.astro'
+
+interface Props {
+  title: string
+  description?: string
+  ogImage?: string
+  canonicalUrl?: string
+}
+
+const { title, description, ogImage, canonicalUrl } = Astro.props
+const siteUrl = 'https://muteki.sh'
+const defaultDesc = 'CTF writeups, web security research, and vulnerability methodology by Khenfri Moussa (Muteki).'
+const metaDesc = description ?? defaultDesc
+const ogImg = ogImage ?? `${siteUrl}/og-default.png`
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- SEO -->
+    <title>{title} — muteki</title>
+    <meta name="description" content={metaDesc} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    <!-- OG / Twitter Card -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} — muteki`} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:image" content={ogImg} />
+    <meta property="og:site_name" content="muteki" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — muteki`} />
+    <meta name="twitter:description" content={metaDesc} />
+    <meta name="twitter:image" content={ogImg} />
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="muteki RSS" href="/rss.xml" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- No-FOUC theme script — runs before paint -->
+    <script is:inline>
+      ;(function () {
+        const stored = localStorage.getItem('theme')
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', stored ?? preferred)
+      })()
+    </script>
+  </head>
+  <body>
+    <Nav />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <Interactions />
+  </body>
+</html>

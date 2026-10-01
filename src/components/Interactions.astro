@@ -1,0 +1,100 @@
+---
+// Interactive mouse touch: Spotlight glow, Magnetic hover, and 3D Card tilt
+---
+
+<div id="spotlight" class="spotlight pointer-events-none fixed inset-0 z-0 transition-opacity duration-500 opacity-0" aria-hidden="true"></div>
+
+<script>
+  // Respect prefers-reduced-motion & touch-only devices
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+  if (!prefersReducedMotion && isFinePointer) {
+    
+    // ── 1. Spotlight Glow ──
+    const spotlight = document.getElementById('spotlight');
+    if (spotlight) {
+      // Only show spotlight on listing/index pages, not heavy content pages
+      const isProsePage = document.querySelector('.prose');
+      
+      if (!isProsePage) {
+        spotlight.style.opacity = '1';
+        
+        document.addEventListener('mousemove', (e) => {
+          const x = e.clientX;
+          const y = e.clientY;
+          spotlight.style.background = `radial-gradient(600px circle at ${x}px ${y}px, var(--accent-muted), transparent 45%)`;
+        }, { passive: true });
+      }
+    }
+
+    // ── 2. Magnetic Hover ──
+    function initMagnetic() {
+      const magnetics = document.querySelectorAll('.magnetic');
+      
+      magnetics.forEach((elem) => {
+        const el = elem as HTMLElement;
+        
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const hx = rect.left + rect.width / 2;
+          const hy = rect.top + rect.height / 2;
+          
+          const dx = (e.clientX - hx) * 0.18;
+          const dy = (e.clientY - hy) * 0.18;
+          
+          el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+        }, { passive: true });
+        
+        el.addEventListener('mouseleave', () => {
+          el.style.transform = `translate3d(0, 0, 0)`;
+        });
+      });
+    }
+
+    // ── 3. Card 3D Tilt & Lift ──
+    function initCardTilt() {
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach((elem) => {
+        const card = elem as HTMLElement;
+        
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const rotateX = ((y - centerY) / centerY) * -3.5;
+          const rotateY = ((x - centerX) / centerX) * 3.5;
+          
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+          card.style.boxShadow = `0 12px 28px -10px var(--accent-muted)`;
+        }, { passive: true });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
+          card.style.boxShadow = `none`;
+        });
+      });
+    }
+
+    initMagnetic();
+    initCardTilt();
+  }
+</script>
+
+<style is:global>
+  .magnetic {
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, color 0.15s, border-color 0.15s;
+    will-change: transform;
+  }
+  
+  .card {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s;
+    will-change: transform, box-shadow;
+    transform-style: preserve-3d;
+  }
+</style>

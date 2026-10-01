@@ -1,0 +1,212 @@
+{
+  "main": {
+    "id": "4ddd9b3145c4958c",
+    "type": "split",
+    "children": [
+      {
+        "id": "f2a08af3d6cfdb7e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "389f9efc2e87c3d3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "src/content/writeups/byuctf-2026-web.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "byuctf-2026-web"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "08faaad0fe05822e",
+    "type": "split",
+    "children": [
+      {
+        "id": "41eb51ed2a99bb64",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a419c440d148d9c0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5d07e90fc1565bcf",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "e25dae23fe32426f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d9ca2955d54bd3ae",
+    "type": "split",
+    "children": [
+      {
+        "id": "9e4a49b7c990e7cc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "478d95e09931af73",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "src/content/writeups/byuctf-2026-web.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "27a6d73aace41ea4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "src/content/writeups/byuctf-2026-web.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "d46dc973964a59fb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "b2961bf76e27dfd6",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "4228471a26ad3099",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "src/content/writeups/byuctf-2026-web.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "389f9efc2e87c3d3",
+  "lastOpenFiles": [
+    "src/content/writeups/Intergalactic Webhook Service  SunshineCTF 2026.md",
+    "dist/index.html",
+    "dist/sitemap-0.xml",
+    "dist/sitemap-index.xml",
+    "dist/favicon.ico",
+    "dist/favicon.svg",
+    "dist/og-default.png",
+    "dist/rss.xml",
+    "dist/playbook/xxe/index.html",
+    "dist/playbook/xss/index.html",
+    "dist/playbook/websockets/index.html",
+    "dist/playbook/ssrf/index.html",
+    "dist/playbook/sqli/index.html",
+    "src/content/writeups/sunshinectf-2026-intergalactic-webhook.md",
+    "src/content/writeups/byuctf-2026-web.md",
+    "src/content/writeups/picoctf-2026-georouting.md",
+    "src/content/writeups/picoctf-2024-elements.md",
+    "src/content/writeups/crewctf-2025-love-hate-notes.md"
+  ]
+}

@@ -1,0 +1,159 @@
+---
+import Base from '../../layouts/Base.astro'
+import Card from '../../components/Card.astro'
+import { getCollection } from 'astro:content'
+
+const entries = (await getCollection('playbook', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title))
+
+const allTags = [...new Set(entries.flatMap((e) => e.data.tags))].sort()
+---
+
+<Base title="Playbook" description="Khenfri Moussa's web security methodology — attack checklists, enumeration approaches, and mental models for web exploitation.">
+  <div class="list-container">
+    <header class="list-header">
+      <div>
+        <h1 class="list-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+            <line x1="9" x2="9" y1="3" y2="18"/>
+            <line x1="15" x2="15" y1="6" y2="21"/>
+          </svg>
+          Playbook
+        </h1>
+        <p class="list-desc">
+          Working methodology for web security &mdash; attack checklists, enumeration steps, and mental models.
+        </p>
+      </div>
+    </header>
+
+    {allTags.length > 0 && (
+      <div class="filter-group">
+        <span class="filter-label">Tag</span>
+        <button class="filter-btn filter-btn--active" data-filter-tag="">All</button>
+        {allTags.map((tag) => (
+          <button class="filter-btn" data-filter-tag={tag}>{tag}</button>
+        ))}
+      </div>
+    )}
+
+    <p class="results-count">
+      <span id="visible-count">{entries.length}</span> entries
+    </p>
+
+    <div class="card-grid" id="playbook-grid">
+      {entries.map((entry) => (
+        <div class="card-wrapper" data-tags={entry.data.tags.join(',')}>
+          <Card
+            title={entry.data.title}
+            summary={entry.data.summary}
+            href={`/playbook/${entry.id}`}
+            tags={entry.data.tags}
+            collection="playbook"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<script>
+  let activeTag = ''
+
+  function applyFilter() {
+    const wrappers = document.querySelectorAll<HTMLElement>('.card-wrapper')
+    let visible = 0
+    wrappers.forEach((el) => {
+      const tags = el.dataset.tags?.split(',') ?? []
+      const show = !activeTag || tags.includes(activeTag)
+      el.style.display = show ? '' : 'none'
+      if (show) visible++
+    })
+    const counter = document.getElementById('visible-count')
+    if (counter) counter.textContent = String(visible)
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-filter-tag]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter-tag]').forEach((b) => b.classList.remove('filter-btn--active'))
+      btn.classList.add('filter-btn--active')
+      activeTag = btn.dataset.filterTag ?? ''
+      applyFilter()
+    })
+  })
+</script>
+
+<style>
+  .list-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+  .list-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+  .list-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .list-desc code {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.1em 0.3em;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .filter-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    min-width: 36px;
+  }
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--text); border-color: color-mix(in oklch, var(--accent), transparent 50%); }
+  .filter-btn--active {
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent), transparent 40%);
+    background: var(--accent-muted);
+  }
+  .results-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  @media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
+</style>

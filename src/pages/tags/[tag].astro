@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro'
+import Card from '../../components/Card.astro'
+import { getCollection } from 'astro:content'
+import { getReadingTime } from '../../lib/utils'
+import { slugify } from '../../lib/utils'
+
+export async function getStaticPaths() {
+  const [writeups, blog, playbook] = await Promise.all([
+    getCollection('writeups', ({ data }) => !data.draft),
+    getCollection('blog', ({ data }) => !data.draft),
+    getCollection('playbook', ({ data }) => !data.draft),
+  ])
+
+  const all = [...writeups, ...blog, ...playbook]
+  const tags = new Set(all.flatMap((e) => e.data.tags))
+
+  return [...tags].map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: { tag },
+  }))
+}
+
+const { tag } = Astro.props
+
+const [writeups, blog, playbook] = await Promise.all([
+  getCollection('writeups', ({ data }) => !data.draft && data.tags.some((t) => slugify(t) === slugify(tag))),
+  getCollection('blog', ({ data }) => !data.draft && data.tags.some((t) => slugify(t) === slugify(tag))),
+  getCollection('playbook', ({ data }) => !data.draft && data.tags.some((t) => slugify(t) === slugify(tag))),
+])
+
+const allEntries = [
+  ...writeups.map((e) => ({ ...e, collection: 'writeups' as const })),
+  ...blog.map((e) => ({ ...e, collection: 'blog' as const })),
+  ...playbook.map((e) => ({ ...e, collection: 'playbook' as const })),
+].sort((a, b) => {
+  const da = a.data.date ? a.data.date.getTime() : 0
+  const db = b.data.date ? b.data.date.getTime() : 0
+  return db - da
+})
+---
+
+<Base title={`#${tag}`} description={`All posts tagged with "${tag}" on muteki.`}>
+  <div class="tag-container">
+    <header class="tag-header">
+      <div class="tag-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+          <circle cx="7.5" cy="7.5" r="1.5"/>
+        </svg>
+        {tag}
+      </div>
+      <p class="tag-count">{allEntries.length} {allEntries.length === 1 ? 'entry' : 'entries'}</p>
+    </header>
+
+    <div class="card-grid">
+      {allEntries.map((entry) => (
+        <Card
+          title={entry.data.title}
+          summary={entry.data.summary}
+          href={`/${entry.collection}/${entry.id}`}
+          date={'date' in entry.data ? entry.data.date : undefined}
+          tags={entry.data.tags}
+          collection={entry.collection}
+          ctf={'ctf' in entry.data ? entry.data.ctf : undefined}
+          readingTime={'body' in entry && entry.body ? getReadingTime(entry.body) : undefined}
+        />
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .tag-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .tag-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .tag-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font-mono);
+  }
+
+  .tag-count {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
+</style>
